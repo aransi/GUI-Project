@@ -1,0 +1,171 @@
+import random
+from tkinter import *
+
+
+questions=["Who developed Python Programming Language?",
+           "Which type of Programming does Python support?",
+           "Is Python case sensitive when dealing with identifiers?",
+           "Which of the following is the correct extension of the Python file?",
+           "Is Python code compiled or interpreted?",
+           "Which keyword is used for function in Python language?",
+           "Which of the following character is used to give single-line comments in Python?",
+           "What does pip stand for python?"
+           "Which one of the following is not a keyword in Python language?",
+           "What arithmetic operators cannot be used with strings in Python?"]
+answer_choice=[["1) Wick van Rossum","2) Rasmus Lerdorf","3) Guido van Rossum","4) Niene Stom"],
+               ["1) object-oriented programming","2) structured programming","3) functional programming","4) all of the mentioned"],
+               ["1) no","2) yes","3) machine dependent","4) none of the mentioned"],
+               ["1) .python","2) .pl","3) .py","4) .p"],
+               ["1) Python code is both compiled and interpreted","2) Python code is neither compiled nor interpreted","3) Python code is only compiled","4) Python code is only interpreted"],
+               ["1) Function","2) def","3) Fun","4) Define"],
+               ["1) //","2) #","3) !","4) /*"],
+               ["1) Pip Installs Python","2) Pip Installs Packages","3) Preferred Installer Program","4) All of the mentioned"],
+               ["1) pass","2) eval","3) assert","4) nonlocal"],
+               ["1) *","2) –","3) +","4) All of the mentioned"]]
+
+answers=[2,3,1,2,0,1,1,2,1,1]
+user_answer=[]
+indexes=[]
+def gen():
+    global indexes
+    while(len(indexes)<5):
+        x=random.randint(0,9)
+        if x in indexes:
+            continue
+        else:
+            indexes.append(x)
+    print(indexes)
+
+def showresult(score):
+    global blquestion,r1,r2,r3,r4
+    lblquestion.destroy()
+    r1.destroy()
+    r2.destroy()
+    r3.destroy()
+    r4.destroy()
+
+    score_win = Toplevel(win)
+    score_win.title("Score Board")
+    score_win.geometry("300x200")
+    score_win.config(background="#ffffff")
+    label_score = Label(score_win, text="Your score: " + str(score), font=("Consolas", 20), background="white")
+    label_score.pack(pady=20)
+    
+    close_button = Button(score_win, text="Close", font=("Consolas", 12), command=score_win.destroy)
+    close_button.pack(pady=10)
+
+
+    labelimage=Label(win,background="white",border=0)
+    labelimage.pack(pady=(20,30))
+    labelresulttext=Label(win,font=("Consolas",20),background="white")
+    labelresulttext.pack()
+    if score>=20:
+        img=PhotoImage(file="victory.png")
+        labelimage.configure(image=img)
+        labelimage.image=img
+        labelresulttext.configure(text="You are Excellent!")
+    elif(score>=10 and score<20):
+        img = PhotoImage(file="thum.png")
+        labelimage.configure(image=img)
+        labelimage.image = img
+        labelresulttext.configure(text="You can be better!")
+    else:
+        img = PhotoImage(file="cry.png")
+        labelimage.configure(image=img)
+        labelimage.image = img
+        labelresulttext.configure(text="You should work hard!")
+
+
+def calc():
+    global indexes,user_answer,answers
+    x=0
+    score=0
+    for i in indexes:
+        if user_answer[x]==answers[i]:
+            score=score+5
+        x+=1
+    print(score)
+    showresult(score)
+
+
+ques=1
+def selected():
+    global radiovar,user_answer
+    global lblquestion,r1,r2,r3,r4,ques
+    x=radiovar.get()
+    user_answer.append(x)
+    radiovar.set(-1)
+    if ques<5:
+        lblquestion.config(text=questions[indexes[ques]])
+        r1["text"]=answer_choice[indexes[ques]][0]
+        r2["text"] = answer_choice[indexes[ques]][1]
+        r3["text"] = answer_choice[indexes[ques]][2]
+        r4["text"] = answer_choice[indexes[ques]][3]
+        ques+=1
+    else:
+        print(indexes)
+        print(user_answer)
+        calc()
+
+
+
+
+def startquestions():
+    global lblquestion,r1,r2,r3,r4
+    lblquestion=Label(win,text=questions[indexes[0]],font=("Consolas",16),width=500,justify="center",wraplength=400,background="white")
+    lblquestion.pack(pady=(100,30))
+
+    global radiovar
+    radiovar=IntVar()
+    radiovar.set(-1)
+
+    r1=Radiobutton(win,text=answer_choice[indexes[0]][0],font=("Times",12),value=0,variable=radiovar,command=selected,background="white")
+    r1.pack(pady=(5))
+    r2= Radiobutton(win, text=answer_choice[indexes[0]][1], font=("Times", 12), value=1, variable=radiovar,command=selected,background="white")
+    r2.pack(pady=(5))
+    r3=Radiobutton(win,text=answer_choice[indexes[0]][2],font=("Times",12),value=2,variable=radiovar,command=selected,background="white")
+    r3.pack(pady=(5))
+    r4 = Radiobutton(win, text=answer_choice[indexes[0]][3], font=("Times", 12), value=3, variable=radiovar,command=selected,background="white")
+    r4.pack(pady=(5))
+
+
+def startispressed():
+    labelimage.destroy()
+    labeltext.destroy()
+    lblinstruction.destroy()
+    btnstart.destroy()
+    lblrules.destroy()
+    gen()
+    startquestions()
+
+win=Tk()
+win.title("QUIZStar")
+win.iconbitmap("brain.ico")
+win.geometry("600x600")
+win.config(background="#ffffff")
+win.resizable(0,0)
+
+img1 =PhotoImage(file="download.png")
+labelimage=Label(win,image=img1,background="#ffffff")
+labelimage.pack(pady=(0,0))
+
+labeltext=Label(win,text="QUIZStar",font=("Comic sans MS",24,"bold"),background="white",border=0)
+labeltext.pack(pady=(5,10))
+
+
+img2=PhotoImage(file="startbutton.png")
+btnstart=Button(win,image=img2,relief=FLAT,border=0,command=startispressed,background="white",foreground="white")
+btnstart.pack(pady=(10,25))
+
+lblinstruction=Label(win,text="Read the rules and\nClick start if you ready!",background="#ffffff",font=("consolas",14),justify="center")
+lblinstruction.pack(pady=(10,20))
+
+lblrules=Label(win,
+               text="This is contain 10 questions.\nYou will have 5 questions for solving .\nOnce you select a answer your answer will be submitted.",
+               width=100,
+               font=("Times",14),
+               background="black",
+               foreground="yellow")
+lblrules.pack(pady=(20,30))
+
+win.mainloop()
